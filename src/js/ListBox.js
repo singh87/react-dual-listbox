@@ -18,6 +18,7 @@ class ListBox extends React.Component {
         id: PropTypes.string.isRequired,
         inputRef: PropTypes.func.isRequired,
         lang: languageShape.isRequired,
+        maxElements: PropTypes.number.isRequired,
         showHeaderLabels: PropTypes.bool.isRequired,
         showNoOptionsText: PropTypes.bool.isRequired,
         onDoubleClick: PropTypes.func.isRequired,
@@ -50,11 +51,22 @@ class ListBox extends React.Component {
      * @returns {void}
      */
     onChange(event) {
-        const value = arrayFrom(event.target.options)
-            .filter((option) => option.selected)
-            .map((option) => option.value);
+        const { maxElements } = this.props;
+        // eslint-disable-next-line react/destructuring-assignment
+        if (maxElements === -1) {
+            const value = arrayFrom(event.target.options)
+                .filter((option) => option.selected)
+                .map((option) => option.value);
 
-        this.setState({ value });
+            this.setState({ value });
+        // eslint-disable-next-line react/destructuring-assignment
+        } else if (this.state.value.length < maxElements) {
+            const value = arrayFrom(event.target.options)
+                .filter((option) => option.selected)
+                .map((option) => option.value);
+
+            this.setState({ value });
+        }
     }
 
     /**

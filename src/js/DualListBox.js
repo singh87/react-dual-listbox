@@ -64,6 +64,8 @@ class DualListBox extends React.Component {
         icons: iconsShape,
         id: PropTypes.string,
         lang: languageShape,
+        maxAvailable: PropTypes.number,
+        maxSelected: PropTypes.number,
         moveKeyCodes: PropTypes.arrayOf(PropTypes.number),
         name: PropTypes.string,
         preserveSelectOrder: PropTypes.bool,
@@ -99,6 +101,8 @@ class DualListBox extends React.Component {
         showNoOptionsText: false,
         showOrderButtons: false,
         onFilterChange: null,
+        maxAvailable: -1,
+        maxSelected: -1,
     };
 
     /**
@@ -659,7 +663,7 @@ class DualListBox extends React.Component {
      *
      * @returns {React.Component}
      */
-    renderListBox(controlKey, options, ref, actions) {
+    renderListBox(controlKey, options, ref, actions, max) {
         const {
             alignActions,
             canFilter,
@@ -691,6 +695,7 @@ class DualListBox extends React.Component {
                     }
                 }}
                 lang={lang}
+                maxElements={max}
                 showHeaderLabels={showHeaderLabels}
                 showNoOptionsText={showNoOptionsText}
                 onDoubleClick={wrapHandler(this.onOptionDoubleClick)}
@@ -720,6 +725,8 @@ class DualListBox extends React.Component {
             selectedRef,
             showHeaderLabels,
             showOrderButtons,
+            maxAvailable,
+            maxSelected,
         } = this.props;
         const { id } = this.state;
         const availableOptions = this.renderOptions(this.filterAvailable(options));
@@ -757,14 +764,14 @@ class DualListBox extends React.Component {
 
         return (
             <div className={className} id={id}>
-                {this.renderListBox('available', availableOptions, availableRef, actionsRight)}
+                {this.renderListBox('available', availableOptions, availableRef, actionsRight, maxAvailable)}
                 {alignActions === ALIGNMENTS.MIDDLE ? (
                     <div className="rdl-actions">
                         {actionsRight}
                         {actionsLeft}
                     </div>
                 ) : null}
-                {this.renderListBox('selected', selectedOptions, selectedRef, actionsLeft)}
+                {this.renderListBox('selected', selectedOptions, selectedRef, actionsLeft, maxSelected)}
                 {preserveSelectOrder && showOrderButtons ? (
                     <div className="rdl-actions">
                         {makeAction('up')}
