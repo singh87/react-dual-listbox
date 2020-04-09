@@ -21,6 +21,7 @@
   "main": "lib/index.js",
   "browser": "lib/index.browser.js",
   "scripts": {
+    "prepare": "gulp build",
     "build": "gulp build",
     "examples": "gulp examples",
     "gh-deploy": "gulp build-gh-pages && bash ./gh-deploy.sh",
