@@ -557,6 +557,12 @@ class DualListBox extends React.Component {
 
         if (allowDuplicates) {
             // If we allow duplicates, all options will always be available
+            if (available !== undefined) {
+                filterer = (option) => (
+                    this.getFlatOptions(available).indexOf(option.value) >= 0 &&
+                    this.getFlatOptions(selected).indexOf(option.value) < 0
+                );
+            }
             filterer = () => true;
         } else if (available !== undefined) {
             // If the caller is restricting the available options, combine that with the default
