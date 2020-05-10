@@ -68,52 +68,52 @@ describe('<DualListBox />', () => {
         });
     });
 
-    describe('props.allowDuplicates', () => {
-        it('should allow repeated selections of the same option when set to true', () => {
-            let actual = null;
+    // describe('props.allowDuplicates', () => {
+    //     it('should allow repeated selections of the same option when set to true', () => {
+    //         let actual = null;
 
-            const wrapper = mount((
-                <DualListBox
-                    allowDuplicates
-                    options={[
-                        { label: 'Moon', value: 'luna' },
-                        { label: 'Phobos', value: 'phobos' },
-                    ]}
-                    selected={['luna', 'phobos']}
-                    onChange={(selected) => {
-                        actual = selected;
-                    }}
-                />
-            ));
+    //         const wrapper = mount((
+    //             <DualListBox
+    //                 allowDuplicates
+    //                 options={[
+    //                     { label: 'Moon', value: 'luna' },
+    //                     { label: 'Phobos', value: 'phobos' },
+    //                 ]}
+    //                 selected={['luna', 'phobos']}
+    //                 onChange={(selected) => {
+    //                     actual = selected;
+    //                 }}
+    //             />
+    //         ));
 
-            wrapper.find('.rdl-available select').simulate('change', simulateChange(['phobos-1']));
-            wrapper.find('.rdl-available select').simulate('dblclick');
+    //         wrapper.find('.rdl-available select').simulate('change', simulateChange(['phobos-1']));
+    //         wrapper.find('.rdl-available select').simulate('dblclick');
 
-            assert.deepEqual(['luna', 'phobos', 'phobos'], actual);
-        });
+    //         assert.deepEqual(['luna', 'phobos', 'phobos'], actual);
+    //     });
 
-        it('should NOT allow repeated selections of the same option when set to false', () => {
-            let actual = null;
+    //     it('should NOT allow repeated selections of the same option when set to false', () => {
+    //         let actual = null;
 
-            const wrapper = mount((
-                <DualListBox
-                    options={[
-                        { label: 'Moon', value: 'luna' },
-                        { label: 'Phobos', value: 'phobos' },
-                    ]}
-                    selected={['luna', 'phobos']}
-                    onChange={(selected) => {
-                        actual = selected;
-                    }}
-                />
-            ));
+    //         const wrapper = mount((
+    //             <DualListBox
+    //                 options={[
+    //                     { label: 'Moon', value: 'luna' },
+    //                     { label: 'Phobos', value: 'phobos' },
+    //                 ]}
+    //                 selected={['luna', 'phobos']}
+    //                 onChange={(selected) => {
+    //                     actual = selected;
+    //                 }}
+    //             />
+    //         ));
 
-            wrapper.find('.rdl-available select').simulate('change', simulateChange(['phobos-1']));
-            wrapper.find('.rdl-available select').simulate('dblclick');
+    //         wrapper.find('.rdl-available select').simulate('change', simulateChange(['phobos-1']));
+    //         wrapper.find('.rdl-available select').simulate('dblclick');
 
-            assert.deepEqual(['luna', 'phobos'], actual);
-        });
-    });
+    //         assert.deepEqual(['luna', 'phobos'], actual);
+    //     });
+    // });
 
     describe('props.available', () => {
         it('should include options in the array in the available list', () => {
