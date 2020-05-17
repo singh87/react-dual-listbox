@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import escapeRegExp from 'lodash/escapeRegExp';
-import nanoid from 'nanoid';
+import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -54,6 +54,7 @@ class DualListBox extends React.Component {
         available: valueShape,
         availableRef: PropTypes.func,
         canFilter: PropTypes.bool,
+        className: PropTypes.string,
         disabled: PropTypes.bool,
         filter: PropTypes.shape({
             available: PropTypes.string.isRequired,
@@ -82,6 +83,7 @@ class DualListBox extends React.Component {
         available: undefined,
         availableRef: null,
         canFilter: false,
+        className: null,
         disabled: false,
         filter: null,
         filterPlaceholder: 'Search...',
@@ -208,7 +210,7 @@ class DualListBox extends React.Component {
         const sourceListBox = directionIsRight ? this.available : this.selected;
         const selection = this.getSelectedOptions(sourceListBox);
 
-        let selected = [];
+        let selected;
 
         if (['up', 'down'].indexOf(direction) > -1) {
             selected = this.rearrangeSelected(selection, direction);
@@ -553,19 +555,23 @@ class DualListBox extends React.Component {
         const { allowDuplicates, available, selected } = this.props;
         const { filter: { available: availableFilter } } = this.state;
 
-        // The default is to only show available options when they are not selected
-        let filterer = (option) => this.getFlatOptions(selected).indexOf(option.value) < 0;
+        const filters = [];
 
-        if (allowDuplicates) {
-            // If we allow duplicates, all options will always be available
-            filterer = () => true;
-        } else if (available !== undefined) {
-            // If the caller is restricting the available options, combine that with the default
-            filterer = (option) => (
-                this.getFlatOptions(available).indexOf(option.value) >= 0 &&
-                this.getFlatOptions(selected).indexOf(option.value) < 0
-            );
+        // Apply user-defined available restrictions, if any
+        if (available !== undefined) {
+            filters.push((option) => this.getFlatOptions(available).indexOf(option.value) >= 0);
         }
+
+        // If duplicates are not allowed, filter out selected options
+        if (!allowDuplicates) {
+            filters.push((option) => this.getFlatOptions(selected).indexOf(option.value) < 0);
+        }
+
+        // Apply each filter function on the option
+        const filterer = (option) => filters.reduce(
+            (previousValue, filter) => previousValue && filter(option),
+            true,
+        );
 
         return this.filterOptions(options, filterer, availableFilter);
     }
@@ -728,6 +734,7 @@ class DualListBox extends React.Component {
             alignActions,
             availableRef,
             canFilter,
+            className,
             disabled,
             icons,
             lang,
@@ -765,16 +772,17 @@ class DualListBox extends React.Component {
                 {makeAction('left', true)}
             </div>
         );
-        const className = classNames({
+        const rootClassName = classNames({
             'react-dual-listbox': true,
             'rdl-has-filter': canFilter,
             'rdl-has-header': showHeaderLabels,
             'rdl-align-top': alignActions === ALIGNMENTS.TOP,
+            ...(className && { [className]: true }),
         });
         const value = this.getFlatOptions(selected).join(',');
 
         return (
-            <div className={className} id={id}>
+            <div className={rootClassName} id={id}>
                 {this.renderListBox('available', availableOptions, availableRef, actionsRight)}
                 {alignActions === ALIGNMENTS.MIDDLE ? (
                     <div className="rdl-actions">

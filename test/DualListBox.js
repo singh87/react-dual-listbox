@@ -92,6 +92,7 @@ describe('<DualListBox />', () => {
             assert.deepEqual(['luna', 'phobos', 'phobos'], actual);
         });
 
+        // https://github.com/jakezatecky/react-dual-listbox/issues/103
         it('should work when simpleValue={false}', () => {
             let actual = null;
 
@@ -198,6 +199,28 @@ describe('<DualListBox />', () => {
                 <option value="phobos">Phobos</option>
             )));
         });
+
+        // https://github.com/jakezatecky/react-dual-listbox/issues/110
+        it('should apply even if we allow duplicates', () => {
+            const wrapper = shallow((
+                <DualListBox
+                    allowDuplicates
+                    available={['luna']}
+                    options={[
+                        { label: 'Moon', value: 'luna' },
+                        { label: 'Phobos', value: 'phobos' },
+                    ]}
+                    onChange={() => {}}
+                />
+            ));
+
+            assert.isTrue(wrapper.find('ListBox').at(0).containsMatchingElement((
+                <option value="luna-0">Moon</option>
+            )));
+            assert.isFalse(wrapper.find('ListBox').at(0).containsMatchingElement((
+                <option value="phobos-1">Phobos</option>
+            )));
+        });
     });
 
     describe('props.canFilter', () => {
@@ -238,6 +261,31 @@ describe('<DualListBox />', () => {
 
             assert.isTrue(wrapper.find('ListBox[controlKey="available"] option[value="luna"]').exists());
             assert.isFalse(wrapper.find('ListBox[controlKey="available"] option[value="phobos"]').exists());
+        });
+    });
+
+    describe('props.className', () => {
+        it('should apply the class to the root node if set', () => {
+            const wrapper = shallow((
+                <DualListBox
+                    className="my-class"
+                    options={[{ label: 'Phobos', value: 'phobos' }]}
+                    onChange={() => {}}
+                />
+            ));
+
+            assert.isTrue(wrapper.find('.react-dual-listbox').hasClass('my-class'));
+        });
+
+        it('should not change the root classes if empty', () => {
+            const wrapper = shallow((
+                <DualListBox
+                    options={[{ label: 'Phobos', value: 'phobos' }]}
+                    onChange={() => {}}
+                />
+            ));
+
+            assert.deepEqual('react-dual-listbox', wrapper.find('.react-dual-listbox').prop('className'));
         });
     });
 
